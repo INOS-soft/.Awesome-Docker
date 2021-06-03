@@ -91,6 +91,22 @@ As an example, there is also a file named `Pester.bat` in the `bin` folder which
 
 Whenever possible, it's better to run Invoke-Pester directly (either in an interactive PowerShell session, or using CI software that supports running PowerShell steps in jobs). This is the method that we test and support in our releases.
 
+$pwd = Split-Path -Parent $MyInvocation.MyCommand.Path
+$sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path).Replace(".Tests.", ".")
+. "$pwd\$sut"
+. "$pwd\..\..\Pester.1.0.1\tools\Pester.ps1"
+ 
+Describe "Ensure-AspNetDebugIsFalse" {
+ 
+    Setup -File "inetpub\wwwroot\testsite\web.config" `
+                "<configuration><system.web><compilation debug='true' /></system.web></configuration>"
+ 
+    It "switches debug attribute to false for a web.config in a given website path" {
+        Ensure-AspNetDebugIsFalse "$TestDrive\inetpub\wwwroot\testsite"
+ 
+        [xml] $xml = Get-Content "$TestDrive\inetpub\wwwroot\testsite\web.config"
+        $xml.configuration."system.web".compilation.debug.should.be("false")
+
 For Further Learning:
 -----------------------------------
 * [Getting started with Pester](http://www.powershellmagazine.com/2014/03/12/get-started-with-pester-powershell-unit-testing-framework/)
