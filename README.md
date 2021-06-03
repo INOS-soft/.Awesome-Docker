@@ -107,6 +107,29 @@ Describe "Ensure-AspNetDebugIsFalse" {
         [xml] $xml = Get-Content "$TestDrive\inetpub\wwwroot\testsite\web.config"
         $xml.configuration."system.web".compilation.debug.should.be("false")
 
+import React, {useState, useEffect} from 'react';
+import {render, Text} from 'ink';
+
+const Counter = () => {
+	const [counter, setCounter] = useState(0);
+
+	useEffect(() => {
+		const timer = setInterval(() => {
+			setCounter(previousCounter => previousCounter + 1);
+		}, 100);
+
+		return () => {
+			clearInterval(timer);
+		};
+	}, []);
+
+	return <Text color="green">{counter} tests passed</Text>;
+};
+
+render(<Counter />);
+
+
+
 For Further Learning:
 -----------------------------------
 * [Getting started with Pester](http://www.powershellmagazine.com/2014/03/12/get-started-with-pester-powershell-unit-testing-framework/)
